@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search | LJ Plays</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-zinc-900 text-white font-sans">
+
+<div class="flex h-screen">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-zinc-800 p-5 space-y-6">
+    <div class="flex items-center space-x-3">
+      <img src="logo.png" class="w-10 h-10 rounded-full border border-white" />
+      <h1 class="text-xl font-bold">LJ Plays</h1>
+    </div>
+    <nav class="space-y-3 text-zinc-300">
+      <a href="index.html" class="block hover:text-white">🏠 Home</a>
+      <a href="search.html" class="block hover:text-white">🔍 Search</a>
+      <a href="library.html" class="block hover:text-white">📁 Your Library</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-10 overflow-y-auto">
+    <h2 class="text-2xl font-semibold mb-6">Search Songs</h2>
+    <input type="text" id="searchInput" placeholder="Search for a song..." class="w-full p-3 rounded bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-green-400 mb-6" />
+    
+    <ul id="searchResults" class="space-y-4"></ul>
+  </main>
+</div>
+
+<script>
+  const songFiles = [
+    "song1.mp3", "song2.mp3", "song3.mp3", "song4.mp3", "song5.mp3", "song6.mp3",
+    "song7.mp3", "song8.mp3", "song9.mp3", "song10.mp3", "song11.mp3", "song12.mp3",
+    "song13.mp3", "song14.mp3", "song15.mp3", "song16.mp3", "song17.mp3", "song18.mp3"
+  ];
+
+  const songTitles = [
+    "Victory Anthem", "Jatt Mehkma", "Millionaire", "Amkhon se batana", "Khwaab", "Ye Ishq Hai",
+    "Girl I need You", "Relation", "Lehenga", "Bulleya", "Prem Ki Naiya Hai", "Punjabi Wedding",
+    "Mitwa", "Yaad Piya Ki", "Teri Aankhon Mein", "jhol", "Aashiq Tera", "O Rangrez"
+  ];
+
+  const songImages = [
+    "image1.jpg", "image2.jpg", "image3.jpg", "image4.jpg", "image5.jpg", "image6.jpg",
+    "image7.jpg", "image8.jpg", "image9.jpg", "image10.jpg", "image11.jpg", "image12.jpg",
+    "image13.jpg", "image14.jpg", "image15.jpg", "image16.jpg", "image17.jpg", "image18.jpg"
+  ];
+
+  // Ensure all arrays have the same length to avoid undefined values
+  if (songFiles.length !== songTitles.length || songTitles.length !== songImages.length) {
+    throw new Error("Song data arrays are not of equal length.");
+  }
+  const songs = songTitles.map((title, index) => ({
+    name: title,
+    file: `./songs/${songFiles[index]}`,
+    image: `./images/${songImages[index]}`
+  }));
+
+  const searchInput = document.getElementById('searchInput');
+  const searchResults = document.getElementById('searchResults');
+
+  function renderResults(query) {
+    searchResults.innerHTML = "";
+    const results = songs.filter(song =>
+      song.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    if (results.length === 0) {
+      searchResults.innerHTML = "<p class='text-zinc-400'>No matching songs found.</p>";
+      return;
+    }
+
+    results.forEach(song => {
+      const li = document.createElement("li");
+      li.className = "flex items-center justify-between bg-zinc-800 p-4 rounded hover:bg-zinc-700 transition";
+
+      const songInfo = document.createElement("div");
+      songInfo.className = "flex items-center space-x-4";
+      songInfo.innerHTML = `
+        <img src="${song.image}" class="w-12 h-12 rounded" onerror="this.onerror=null;this.src='https://via.placeholder.com/48x48?text=No+Img';" />
+        <span>${song.name}</span>
+        <audio controls class="ml-4" style="width:120px;">
+          <source src="${song.file}" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      `;
+
+      const addBtn = document.createElement("button");
+      addBtn.textContent = "❤️";
+      addBtn.className = "text-red-400 hover:text-red-300 text-sm";
+      addBtn.addEventListener("click", () => addToLibrary(song));
+
+      li.appendChild(songInfo);
+      li.appendChild(addBtn);
+      searchResults.appendChild(li);
+    });
+  }
+
+  function addToLibrary(song) {
+    let library = JSON.parse(localStorage.getItem("librarySongs")) || [];
+    const exists = library.find((s) => s.name === song.name);
+    if (exists) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Already in Library',
+        text: `${song.name} is already there.`,
+        toast: true,
+        timer: 2000,
+        showConfirmButton: false,
+        position: 'top-end',
+      });
+    } else {
+      library.push(song);
+      localStorage.setItem("librarySongs", JSON.stringify(library));
+      Swal.fire({
+        icon: 'success',
+        title: 'Added!',
+        text: `${song.name} has been added to your library.`,
+        toast: true,
+        timer: 2000,
+        showConfirmButton: false,
+        position: 'top-end',
+      });
+    }
+  }
+
+  // Initial load
+  renderResults("");
+
+  // Live search
+  searchInput.addEventListener("input", (e) => {
+    renderResults(e.target.value);
+  });
+</script>
+
+</body>
+</html>

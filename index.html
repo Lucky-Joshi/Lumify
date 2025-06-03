@@ -6,29 +6,30 @@
   <title>LJ Plays</title>
   <link rel="icon" href="logo.png" type="image/png" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-zinc-900 text-white font-sans">
 
-  <!-- Sidebar -->
   <div class="flex h-screen">
+    <!-- Sidebar -->
     <aside class="w-64 bg-zinc-800 p-5 space-y-6">
       <div class="flex items-center space-x-3">
-        <img src="logo.png" class="w-10 h-10 rounded-full border border-white" alt="Logo" />
+        <img src="logo.png" class="w-10 h-10 rounded-full border border-white" />
         <h1 class="text-xl font-bold">LJ Plays</h1>
       </div>
       <nav class="space-y-3 text-zinc-300">
-        <a href="#" class="block hover:text-white">🏠 Home</a>
-        <a href="#" class="block hover:text-white">🔍 Search</a>
-        <a href="#" class="block hover:text-white">📁 Your Library</a>
+        <a href="index.html" class="block hover:text-white">🏠 Home</a>
+        <a href="search.html" class="block hover:text-white">🔍 Search</a>
+        <a href="library.html" class="block hover:text-white">📁 Your Library</a>
       </nav>
     </aside>
 
-    <!-- Main Player Section -->
+    <!-- Main Content -->
     <main class="flex-1 flex flex-col justify-between">
-      <!-- Song Display -->
+      <!-- Song Preview -->
       <div class="p-6">
         <div class="max-w-md mx-auto text-center">
-          <img id="song-image" src="image1.jpg" class="rounded-lg shadow-lg mb-4" />
+          <img id="song-image" src="" alt="Song Cover" class="rounded-lg shadow-lg mb-4 hidden" onerror="this.src='logo.png';" />
           <h2 id="song-title" class="text-xl font-semibold text-green-400 mb-2">Song Title</h2>
         </div>
       </div>
@@ -38,7 +39,7 @@
         <ul id="song-list" class="space-y-2 text-sm text-zinc-300"></ul>
       </div>
 
-      <!-- Footer Music Player Controls -->
+      <!-- Footer Player -->
       <footer class="bg-zinc-800 px-6 py-4 shadow-inner flex flex-col items-center space-y-4">
         <div class="w-full max-w-md flex justify-center items-center space-x-6">
           <button id="prev" class="text-2xl">⏮</button>
@@ -49,7 +50,7 @@
           <div class="bg-green-400 h-full w-0" id="progress"></div>
         </div>
         <button id="loop" class="text-xs px-4 py-1 border border-green-400 rounded-full text-green-400 hover:bg-green-400 hover:text-black transition">Loop: Off</button>
-        <audio id="audio" src="song1.mp3"></audio>
+        <audio id="audio" src="" controls style="display:none;"></audio>
       </footer>
     </main>
   </div>

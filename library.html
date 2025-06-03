@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Library | LJ Plays</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-zinc-900 text-white font-sans">
+<div class="flex h-screen">
+  <aside class="w-64 bg-zinc-800 p-5 space-y-6">
+    <div class="flex items-center space-x-3">
+      <img src="logo.png" class="w-10 h-10 rounded-full border border-white" />
+      <h1 class="text-xl font-bold">LJ Plays</h1>
+    </div>
+    <nav class="space-y-3 text-zinc-300">
+      <a href="index.html" class="block hover:text-white">🏠 Home</a>
+      <a href="search.html" class="block hover:text-white">🔍 Search</a>
+      <a href="library.html" class="block hover:text-white">📁 Your Library</a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 p-10">
+    <h2 class="text-2xl font-semibold mb-6">Your Library</h2>
+    <div id="libraryGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+  </main>
+</div>
+
+<script>
+  const libraryGrid = document.getElementById("libraryGrid");
+  let librarySongs = JSON.parse(localStorage.getItem("librarySongs")) || [];
+
+  function renderLibrary() {
+    libraryGrid.innerHTML = "";
+    if (librarySongs.length === 0) {
+      libraryGrid.innerHTML = "<p class='text-zinc-400'>No songs in your library yet.</p>";
+      return;
+    }
+
+    librarySongs.forEach((song, index) => {
+      const div = document.createElement("div");
+      div.className = "bg-zinc-800 p-4 rounded hover:bg-zinc-700 transition";
+      div.innerHTML = `
+        <img src="${song.image || 'default-image.png'}" class="rounded mb-2 w-full h-32 object-cover" alt="Song Image"
+          onerror="this.onerror=null;this.src='default-image.png';" />
+        <p class="mb-2">${song.name}</p>
+        <audio controls class="w-full mb-2">
+          <source src="${song.audio || ''}" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+        <button class="px-2 py-1 text-xs bg-red-500 hover:bg-red-600 rounded" onclick="removeFromLibrary(${index})">Remove</button>
+      `;
+      libraryGrid.appendChild(div);
+    });
+  }
+
+  function removeFromLibrary(index) {
+    const song = librarySongs[index];
+    librarySongs.splice(index, 1);
+    localStorage.setItem("librarySongs", JSON.stringify(librarySongs));
+    renderLibrary();
+    Swal.fire({
+      icon: 'warning',
+      title: 'Removed',
+      text: `${song.name} removed from library.`,
+      toast: true,
+      timer: 2000,
+      showConfirmButton: false,
+      position: 'top-end',
+    });
+  }
+
+  renderLibrary();
+</script>
+
+</body>
+</html>
